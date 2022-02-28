@@ -17,22 +17,29 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.SurfaceTexture
 import android.graphics.drawable.Drawable
 import android.icu.util.Output
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.TextUtils
 import android.util.Log
 import android.view.DragAndDropPermissions
 import android.widget.Gallery
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.whenResumed
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.favdish.databinding.DialogCustomListBinding
+import com.example.favdish.utils.Constants
+import com.example.favdish.view.adapter.CustomListAdapter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -50,6 +57,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mBinding: ActivityAddUpdateDishBinding
     private var mImagePath: String = ""
+    private lateinit var mCustomListDialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +68,10 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         setupActionBar()
 
         mBinding.ivAddDishImage.setOnClickListener(this@AddUpdateDishActivity)
+        mBinding.etType.setOnClickListener(this)
+        mBinding.etCategory.setOnClickListener(this)
+        mBinding.etCookingTime.setOnClickListener(this)
+        mBinding.btnAddDish.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -70,6 +82,102 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
                 customImageSelectionDialog()
                 return
+            }
+
+            R.id.et_type -> {
+                 customItemsDialog(resources.getString(R.string.title_select_dish_type),
+                    Constants.dishTypes(),
+                    Constants.DISH_TYPE)
+                return
+            }
+            R.id.et_cooking_time -> {
+                customItemsDialog(resources.getString(R.string.title_select_dish_cooking_time),
+                    Constants.dishCookTime(),
+                    Constants.DISH_COOKING_TIME)
+                return
+            }
+            R.id.et_category -> {
+                customItemsDialog(resources.getString(R.string.title_select_dish_category),
+                    Constants.dishCategory(),
+                    Constants.DISH_CATEGORY)
+                return
+            }
+
+            R.id.btn_add_dish -> {
+                val title = mBinding.etTitle.text.toString().trim { it <= ' ' }
+                val type = mBinding.etType.text.toString().trim { it <= ' ' }
+                val category = mBinding.etCategory.text.toString().trim { it <= ' ' }
+                val ingredients = mBinding.etIngredients.text.toString().trim { it <= ' ' }
+                val cookingTimeInMinutes = mBinding.etCookingTime.text.toString().trim { it <= ' ' }
+                val cookingDirection = mBinding.etDirectionToCook.text.toString().trim { it <= ' ' }
+
+                when {
+
+                        TextUtils.isEmpty(mImagePath) -> {
+                                Toast.makeText(
+                                    this@AddUpdateDishActivity,
+                                    resources.getString(R.string.err_select_dish_image),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                        }
+
+                    TextUtils.isEmpty(title) -> {
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            resources.getString(R.string.err_select_dish_title),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    TextUtils.isEmpty(type) -> {
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            resources.getString(R.string.err_select_dish_type),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    TextUtils.isEmpty(category) -> {
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            resources.getString(R.string.err_select_dish_category),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    TextUtils.isEmpty(ingredients) -> {
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            resources.getString(R.string.err_select_dish_ingredients),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    TextUtils.isEmpty(cookingTimeInMinutes) -> {
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            resources.getString(R.string.err_select_dish_cooking_time),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    TextUtils.isEmpty(cookingDirection) -> {
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            resources.getString(R.string.err_select_dish_instruction),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    else -> {
+                         Toast.makeText(
+                             this@AddUpdateDishActivity,
+                                    "All the entries are valid",
+                                    Toast.LENGTH_SHORT
+                         ).show()
+                    }
+
+                }
             }
         }
     }
@@ -260,9 +368,27 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         //Start the dialog and display it on screen.
-        dialog.show()
+       dialog.show()
     }
 
+    fun selectedListItem(item: String, selection: String) {
+          when(selection) {
+               Constants.DISH_TYPE -> {
+                   mCustomListDialog.dismiss()
+                   mBinding.etType.setText(item)
+               }
+
+               Constants.DISH_CATEGORY -> {
+                   mCustomListDialog.dismiss()
+                   mBinding.etCategory.setText(item)
+               }
+
+               Constants.DISH_COOKING_TIME -> {
+                    mCustomListDialog.dismiss()
+                    mBinding.etCookingTime.setText(item)
+               }
+          }
+    }
 
     /**
      * A function used to show the alert dialog when the permissions are denied and need to allow it from settings app info.
@@ -304,6 +430,22 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             return file.absolutePath
+    }
+
+    private fun customItemsDialog(title: String, itemsList: List<String>, selection:String) {
+
+            mCustomListDialog = Dialog(this)
+            val binding: DialogCustomListBinding = DialogCustomListBinding.inflate(layoutInflater)
+
+            mCustomListDialog.setContentView(binding.root)
+
+            binding.tvTitle.text = title
+            binding.rvList.layoutManager = LinearLayoutManager(this)
+
+            val adapter = CustomListAdapter(this,itemsList, selection)
+            binding.rvList.adapter = adapter
+            mCustomListDialog.show()
+
     }
 
     // TODO Step 1: Define the Companion Object to define the constants used in the class. We will define the constant for camera.

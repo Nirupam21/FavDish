@@ -22,5 +22,17 @@
     <string name="title_select_image_action">Select Image Action</string>
     <string name="lbl_camera">Camera</string>
     <string name="lbl_gallery">Gallery</string>
+
+    <string name="title_select_dish_type">SELECT DISH TYPE</string>
+    <string name="title_select_dish_category">SELECT DISH CATEGORY</string>
+    <string name="title_select_dish_cooking_time">SELECT DISH COOKING TIME</string>
+
+    <string name="err_select_dish_image">Select Dish Image</string>
+    <string name="err_select_dish_title">Enter Dish title</string>
+    <string name="err_select_dish_type">Select Dish type</string>
+    <string name="err_select_dish_category">Select Dish category</string>
+    <string name="err_select_dish_ingredients">Enter Dish ingredients</string>
+    <string name="err_select_dish_cooking_time">Select Dish cooking time</string>
+    <string name="err_select_dish_instruction">Enter Dish cooking instruction</string>
     <!--END-->
 </resources>
