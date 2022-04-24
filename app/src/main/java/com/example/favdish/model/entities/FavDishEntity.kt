@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity
+@Entity(tableName = "FAV_DISH_TABLE")
 data class FavDishEntity (
                 @ColumnInfo val image: String,
                 @ColumnInfo(name = "image_source") val imageSource: String,

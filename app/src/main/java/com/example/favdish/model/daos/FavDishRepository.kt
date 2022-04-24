@@ -2,6 +2,7 @@ package com.example.favdish.model.daos
 
 import androidx.annotation.WorkerThread
 import com.example.favdish.model.entities.FavDishEntity
+import kotlinx.coroutines.flow.Flow
 
 class FavDishRepository(private val favDishDao: FavDishDao) {
 
@@ -10,4 +11,5 @@ class FavDishRepository(private val favDishDao: FavDishDao) {
                   favDishDao.insertFavDishDetails(favDishEntity)
       }
 
+      val allDishesList: Flow<List<FavDishEntity>> = favDishDao.getAllDishesList()
 }
