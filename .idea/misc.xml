@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/ic_all_dishes.xml" value="0.25925925925925924" />
         <entry key="app/src/main/res/drawable/ic_gallery.xml" value="0.27870370370370373" />
         <entry key="app/src/main/res/drawable/ic_photo_camera.xml" value="0.27870370370370373" />
         <entry key="app/src/main/res/layout/activity_add_update_dish.xml" value="0.45" />
@@ -11,8 +12,9 @@
         <entry key="app/src/main/res/layout/dialog_custom_image_selection.xml" value="0.1" />
         <entry key="app/src/main/res/layout/dialog_custom_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_all_dishes.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.17028985507246377" />
         <entry key="app/src/main/res/layout/item_custom_list.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/item_dish_layout.xml" value="0.18568840579710144" />
+        <entry key="app/src/main/res/layout/item_dish_layout.xml" value="0.1" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
         <entry key="app/src/main/res/menu/menu_all_dishes.xml" value="0.24722222222222223" />
       </map>
